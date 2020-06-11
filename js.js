@@ -1,23 +1,26 @@
-var tbody = document.querySelector('#table tbody');  //scope땜에 밖으로 꺼냄
+var tbody = document.querySelector('#table tbody');
 var dataset = [];
+var 중단플래그 = false;
+var 열은칸 = 0;
 
 document.querySelector('#exec').addEventListener('click', function() {
-  tbody.innerHTML = '';  //실행할때마다 초기화
+  //전 게임 초기화
+  tbody.innerHTML = '';
   dataset = [];
+  중단플래그 =false;
+  열은칸 = 0;
+  document.querySelector('#result').textContent = '';
+
   var hor = parseInt(document.querySelector('#hor').value);
   var ver = parseInt(document.querySelector('#ver').value);
   var mine = parseInt(document.querySelector('#mine').value);
-  console.log(hor, ver, mine);
 
 //@지뢰위치 뽑기
-//1~100까지 배열 만들기 (로또추첨 생각) array, fill, map 외우기
 var 후보군 = Array(hor * ver).fill().map(function (요소, 인덱스) {
   return 인덱스;
 });
-
-//이 방법명 : 피셔예이츠 셔플
 var 셔플 = [];
-while (후보군.length > 80) { //20개만 뽑기
+while (후보군.length > hor*ver-mine) {
   var 이동값 = 후보군.splice(Math.floor(Math.random() * 후보군.length), 1)[0];
   셔플.push(이동값);
 }
@@ -25,73 +28,88 @@ while (후보군.length > 80) { //20개만 뽑기
 console.log('셔플', 셔플);
 
 // @지뢰 테이블 만들기
-//입력받은 hor, ver값에 따라 tr, td 테이블 생성하기
-//화면의 모양과 콘솔의 모양을 생각
 for (var i = 0; i < ver; i+= 1) {
   var arr = [];
   var tr = document.createElement('tr');
   dataset.push(arr);
   for (var j = 0; j < hor; j+= 1) {
-    arr.push(1);
-    //^이거 없어도 되지만 콘솔안의 배열에 [1,1,1..] 넣으려면 필요(데이터와 화면 일치)
-    //arr배열 여러개를 한번에 잡고 그 안에 1을 하나씩 추가
+    arr.push(0);
     var td = document.createElement('td');
+
+    //우버튼 누르면
     td.addEventListener('contextmenu', function (e) {
       e.preventDefault();
+      if (중단플래그) {
+        return;
+      }
       var 부모tr = e.currentTarget.parentNode;
-      // e.target : ^차이가 있음, 보통 current
-      //예)tbody에 적용할때 Target은 <td>, current는 <tbody>가 잡힘
       var 부모tbody = e.currentTarget.parentNode.parentNode;
       var 칸 = Array.prototype.indexOf.call(부모tr.children, e.currentTarget);
       var 줄 = Array.prototype.indexOf.call(부모tbody.children, 부모tr);
-      //INdexOf는 원래 배열에만 사용 가능한데, 배열이 아닌 부모tr.children에도 쓰려면
-      //Array.prototype의 방법 사용
-      console.log(부모tr, 부모tbody, e.currentTarget, 칸, 줄);
+      console.log('부모tr:', 부모tr, '부모tbody:', 부모tbody, '누른위치:', e.currentTarget, '칸:', 칸, '줄:', 줄);
+
+      //!, ?, 변경
       if (e.currentTarget.textContent === '' || e.currentTarget.textContent === 'X') {
         e.currentTarget.textContent = '!';
+        if (dataset[줄][칸] === 'X') {
+          dataset[줄][칸] = 2;
+        }
       } else if (e.currentTarget.textContent === '!') {
         e.currentTarget.textContent = '?';
+        // if (dataset[줄][칸] === 코드표.지뢰) {
+        //   dataset[줄][칸] = 코드표.물음표지뢰;
+        // } else {
+        //   dataset[줄][칸] = 코드표.물음표;
+        // }
       } else if (e.currentTarget.textContent === '?') {
-        if (dataset[줄][칸] === 1) {
+        if (dataset[줄][칸] === 0) {
           e.currentTarget.textContent = '';
-        } else if (dataset[줄][칸] === 'X') {
+        } else if (dataset[줄][칸] === 2) {
           e.currentTarget.textContent = 'X';
+          dataset[줄][칸] = 'X';
         }
       }
     });
     td.addEventListener('click', function (e) {
       //클릭했을 때 주변 지뢰 개수
+      if (중단플래그) {
+        return;
+        //return으로 함수의 실행을 중간에 끊을 수 있음, 아래쪽 실행안됨
+      }
       var 부모tr = e.currentTarget.parentNode;
       var 부모tbody = e.currentTarget.parentNode.parentNode;
       var 칸 = Array.prototype.indexOf.call(부모tr.children, e.currentTarget);
       var 줄 = Array.prototype.indexOf.call(부모tbody.children, 부모tr);
 
-      e.currentTarget.classList.add('opened'); //태크.classList로 태그의 클래스에 접근, add나 remove로 추가삭제
+      if (dataset[줄][칸] === 2) {
+        return;
+      }
+      e.currentTarget.classList.add('opened');
+      열은칸 += 1;
       if (dataset[줄][칸] === 'X') { //지뢰누르면 화면상 '펑'
         e.currentTarget.textContent = '펑';
+        document.querySelector('#result').textContent = '실패 ㅠㅠ';
+        중단플래그 =true;
       } else {             //지뢰 말고 다른거누르면 '주변 지뢰 개수'
-        var 주변 = [       //끝줄칸은 -1하면 에러나기때문에 이렇게 해주는것
+        var 주변 = [
          dataset[줄][칸-1], dataset[줄][칸+1],
        ];
        if (dataset[줄-1]) {
          주변 = 주변.concat([dataset[줄-1][칸-1], dataset[줄-1][칸], dataset[줄-1][칸+1]]);
-         // 주변.push(dataset[줄-1][칸-1]);     <- 이것과 같다
-         // 주변.push(dataset[줄-1][칸]);
-         // 주변.push(dataset[줄-1][칸+1]);
        }
        if (dataset[줄+1]) {
          주변 = 주변.concat([dataset[줄+1][칸-1], dataset[줄+1][칸], dataset[줄+1][칸+1]]);
        }
-       console.log(주변);
+       console.log('주변', 주변);
        var 주변지뢰개수   = 주변.filter(function(v) {
-          return v === 'X'
+          return v ===  'X'
         }).length;
-         //filter 는 배열에서 필터링하는것, 배열요소가 x인것
-         //concat은 배열과 배열을 합침, 원래 '주변'함수가 변하는건 아님. concat한 상태만 변함
-         e.currentTarget.textContent = 주변지뢰개수;
+         e.currentTarget.textContent = 주변지뢰개수 || '';
+         //||''는 거짓인값(false, 0, null, undefiend, NaN, null)이 앞에오면 뒤에껄 써라
+         dataset[줄][칸] = 1;
          if (주변지뢰개수 === 0) {
+           console.log('주변을 엽니다');
            //주변 8칸 동시 오픈 (재귀함수)
-           //주변지뢰개수를 찾는 것처럼 주변칸을 배열로 모으는 코드
            var 주변칸 = [];
            if (tbody.children[줄-1]) {
              주변칸 = 주변칸.concat([
@@ -113,9 +131,18 @@ for (var i = 0; i < ver; i+= 1) {
              ]);
            }
            주변칸.filter(function(v) { return !!v }).forEach(function(옆칸) {
-             옆칸.click();
+             var 부모tr = 옆칸.parentNode;
+             var 부모tbody = 옆칸.parentNode.parentNode;
+             var 옆칸칸 = Array.prototype.indexOf.call(부모tr.children, 옆칸);
+             var 옆칸줄 = Array.prototype.indexOf.call(부모tbody.children, 부모tr);
+             if (dataset[옆칸줄][옆칸칸] !== 1) {
+               옆칸.click();
+             }
            });
-           //!!는 주변의 0, null, undefined 제거하는 코드
+         }
+         if (열은칸 === hor * ver - mine) {
+           중단플래그 = true;
+           document.querySelector('#result').textContent = '승리 ^^';
          }
       }
     });
@@ -135,3 +162,4 @@ for (var i = 0; i < ver; i+= 1) {
    }
    console.log('dataset',dataset);
 });
+
