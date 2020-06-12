@@ -24,7 +24,7 @@ document.querySelector('#exec').addEventListener('click', function() {
   var ver = parseInt(document.querySelector('#ver').value);
   var mine = parseInt(document.querySelector('#mine').value);
 
-//@지뢰위치 뽑기
+//@지뢰위치 뽑
 var 후보군 = Array(hor * ver).fill().map(function (요소, 인덱스) {
   return 인덱스;
 });
