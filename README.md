@@ -3,5 +3,4 @@
 2. 반응속도테스트 humanBenchmark
 3. 틱택톡 tictactoc 
 
-공부 정리 :
-https://www.notion.so/44504f6096f94ee8b0ad26a5a9e5ae6f
+공부 정리 :https://www.notion.so/90leejiyon/Ji-yon-d2c4f88ff6ae42acac5ee288bad39042
