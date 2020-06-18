@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>짝맞추기</title>
+    <style>
+    /* 화면에 보이는 카드 개수(가로3 세로4)을 고정시키고 싶으면
+    카드태그 감싸는 div를 하나 더 만들어서 width값 지정하면 됨 */
+        .card {
+            display: inline-block; //div는 한칸 다씀
+            margin-right: 20px;
+            margin-bottom: 20px;
+            width: 70px;
+            height: 100px;
+            /* 카드 뒤집기 위해 넣은것, width의 2배 */
+            perspective: 140px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            /* 카드 뒤집는 효과주기 */
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        /* 카드 뒤집는 효과 주기 */
+        .card.flipped .card-inner {
+          /*flipped 안에 있는 inner를 선택 */
+            transform: rotateY(180deg);
+        }
+
+        .card-front {
+            background: blue;
+        }
+
+        .card-front, .card-back {
+          /* front와 back 클래스가 겹쳐지게 하기 */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+            backface-visibility: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class='card'>
+      <div class="card-Inner">
+        <div class="card-front">
+          앞
+        </div>
+        <div class="card-back">
+          뒤
+        </div>
+      </div>
+    </div> -->
+    <div id="wrapper"></div>
+    <script src="prac.js"></script>
+</body>
+</html>
