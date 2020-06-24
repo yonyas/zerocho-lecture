@@ -4,4 +4,7 @@
 3. 틱택톡 tictactoc 
 4. 짝맞추기 Card flip
 
+기록 그만둠. 다른 사람 코드를 내 깃헙에 쓰는게 아닌것 같음. ?? 
+공부는 진행중 
+
 공부 정리 :https://www.notion.so/90leejiyon/Ji-yon-d2c4f88ff6ae42acac5ee288bad39042
