@@ -4,7 +4,7 @@
 3. 틱택톡 tictactoc 
 4. 짝맞추기 Card flip
 5. 자스스톤 
-
+남의 코드를 내 깃헙에 올려도 되나 싶어서 멈춤..
 
 
 공부 정리 :https://www.notion.so/90leejiyon/Ji-yon-d2c4f88ff6ae42acac5ee288bad39042
