@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    #my,
+    #rival {
+      display: inline-block;
+      vertical-align: bottom;
+      margin-right: 50px;
+    }
+
+    #my-deck,
+    #rival-deck {
+      display: inline-block;
+      vertical-align: top;
+      width: 300px;
+      background: silver;
+    }
+
+    #rival-deck,
+    #rival-hero,
+    #rival-cards,
+    #my-cards,
+    #my-deck,
+    #my-hero,
+    #rival-cost,
+    #my-cost {
+      text-align: center;
+    }
+
+    .card {
+      width: 75px;
+      height: 100px;
+      display: inline-block;
+      position: relative;
+      border: 1px solid black;
+      margin-bottom: 10px;
+      background: white;
+      ;
+    }
+
+    .card-name {
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .card-att,
+    .card-hp,
+    .card-cost {
+      font-size: 16px;
+      text-align: center;
+      line-height: 30px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-block;
+      /* border: 1px solid black; */
+      position: absolute;
+      bottom: 0;
+      font-weight: bold;
+    }
+
+
+
+    .card-cost {
+      bottom: auto;
+      top: 0;
+      left: 0;
+      background-color: blue;
+      color: white;
+    }
+
+    .card-att {
+      left: 0;
+      background-color: yellow;
+    }
+
+    .card-hp {
+      right: 0;
+      background-color: red;
+      color: white;
+    }
+
+    .card-hidden {
+      display: none;
+    }
+
+    .card-selected {
+      border: 2px solid red;
+    }
+
+    .card-turnover {
+      background: gray;
+    }
+
+    #turn-btn {
+      float: right;
+      top: -21px;
+      position: relative;
+    }
+
+    .turn {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="rival">
+    <div>코스트: <span id="rival-cost">10</span>/10</div>
+    <div id="rival-hero">
+    </div>
+    <div id="rival-cards" style="height: 150px">
+    </div>
+  </div>
+  <div id="rival-deck">
+    <div>덱</div>
+  </div>
+
+  <hr />
+  <button id="turn-btn">턴넘기기</button>
+
+  <div id="my" class='turn'>
+    <div id="my-cards" style="height: 150px">
+    </div>
+    <div id="my-hero">
+
+    </div>
+    <div>코스트: <span id="my-cost">10</span>/10</div>
+  </div>
+  <div id="my-deck">
+    <div>덱</div>
+  </div>
+
+  <div class="card-hidden">
+    <div class="card">
+      <div class="card-cost"></div>
+      <div class="card-att"></div>
+      <div class="card-hp"></div>
+    </div>
+  </div>
+  <div>빨강이 체력, 노랑이 공격력, 적영웅의 체력이 0이 되면 승리!
+    영웅을 보호하기 위해 쫄병들을 코스트(파랑색) 내에서 뽑을 수 있음
+  </div>
+
+  <script src='style.js'></script>
+</body>
+
+</html>
