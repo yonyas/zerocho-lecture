@@ -1,93 +1,83 @@
-var body = document.body;
-var cols = [];
-var dataset = [];
-var table = document.createElement('table');
-var col = [];
-var row = [];
-var turn = 'o';
-var result = document.createElement('div');
-body.appendChild(result);
-result.textContent = ' 1';
-var full = false;
+var 바디 = document.body;
+var 테이블 = document.createElement('table');
+var 줄들 = [];
+var 칸들 = [];
+var 턴 = 'X';
+var 결과 = document.createElement('div');
 
+var 비동기콜백 = function (이벤트) {
+  var 몇줄 = 줄들.indexOf(이벤트.target.parentNode);
+  var 몇칸 = 칸들[몇줄].indexOf(이벤트.target);
 
-function click(e) {
-    e.preventDefault();
-    //Find col, row of 'click', and Change textContent to "O" 
-    row = e.currentTarget.parentNode;
-    col = e.currentTarget.parentNode.parentNode;
-    // console.log(e.currentTarget, row, col);
-    var colNumber = Array.prototype.indexOf.call(col.children, row);
-    var rowNumber = Array.prototype.indexOf.call(row.childNodes, e.currentTarget);
-    //제로초 코드: tr td를 변수로 만들었음
-    //Check! .children은 Element에만 쓰이고, .childNodes는 Node에 쓰임, 보통 Children 사용, 후자는 text or comment loop하므로..
-    console.log(rowNumber, colNumber);
-
-    //빈칸일때 클릭되기
-    if (turn === 'o' && e.currentTarget.textContent === '') {
-        e.currentTarget.textContent = 'x';
-        turn = 'x';
-    } else if (turn === 'x' && e.currentTarget.textContent === '') {
-        e.currentTarget.textContent = 'o';
-        turn = 'o';
-    }
-
-    //승리 체크
-    //Check row
+  if (칸들[몇줄][몇칸].textContent !== '') { // 칸이 이미 채워져 있는가?
+    console.log('빈 칸아닙니다.');
+  } else { // 빈 칸이면
+    console.log('빈 칸입니다');
+    칸들[몇줄][몇칸].textContent = 턴;
+    // 세칸 다 채워졌나?
+    var 다참 = false;
+    // 가로줄 검사
     if (
-        row.children[0].textContent === 'o' && row.children[1].textContent === 'o' && row.children[2].textContent === 'o' ||
-        row.children[0].textContent === 'x' && row.children[1].textContent === 'x' && row.children[2].textContent === 'x'
+      칸들[몇줄][0].textContent === 턴 &&
+      칸들[몇줄][1].textContent === 턴 &&
+      칸들[몇줄][2].textContent === 턴
     ) {
-        console.log(turn + ' row win');
-        full = true;
+      다참 = true;
     }
-    //TODO: Check col, 클로저 문제로 안되는 것 같은데 해결법을 모르겠음 ㅠㅠ.. 
-    for (var i = 0; i < 3; i++) { // 0 1 2 
-        for (var j = 0; j < 3; j++) { // 0 1 2 
-            (function (i, j, turn, full, table) {
-                if (
-                    table.childNodes[j].childNodes[i].textContent === 'o' && table.childNodes[j].childNodes[i].textContent === 'o' && table.childNodes[j].childNodes[i].textContent === 'o' ||
-                    table.childNodes[j].childNodes[i].textContent === 'x' && table.childNodes[j].childNodes[i].textContent === 'x' && table.childNodes[j].childNodes[i].textContent === 'x'
-                ) {
-                    console.log(turn + ' col win');
-                    full = true;
-
-                }
-            });
-
-        }
+    // 세로줄 검사
+    if (
+      칸들[0][몇칸].textContent === 턴 &&
+      칸들[1][몇칸].textContent === 턴 &&
+      칸들[2][몇칸].textContent === 턴
+    ) {
+      다참 = true;
     }
-
-    //아래처럼 하면 에러 
-    // else if (
-    //     row.children[0][0].textContent === 'o' && row.children[0][1].textContent === 'o' && row.children[0][2].textContent === 'o' ||
-    //     row.children[0][0].textContent === 'x' && row.children[0][1].textContent === 'x' && row.children[0][2].textContent === 'x'
-    // ) {
-    //     console.log(turn + ' v')
-    // }
-
+    // 대각선 검사
+    if (
+      칸들[0][0].textContent === 턴 &&
+      칸들[1][1].textContent === 턴 &&
+      칸들[2][2].textContent === 턴
+    ) {
+      다참 = true;
+    }
+    if (
+      칸들[0][2].textContent === 턴 &&
+      칸들[1][1].textContent === 턴 &&
+      칸들[2][0].textContent === 턴
+    ) {
+      다참 = true;
+    }
     // 다 찼으면
-    if (full) {
-        console.log(turn + '님의 승리!');
-        turn = 'o';
-        for (var k = 0; k < 3; k++) { // 0 1 2 
-            for (var l = 0; l < 3; l++) { // 0 1 2 
-                table.childNodes[k].childNodes[l].textContent = '';
-            }
-        }
+    if (다참) {
+      결과.textContent = 턴 + '님이 승리!';
+      // 초기화
+      턴 = 'X';
+      칸들.forEach(function (줄) {
+        줄.forEach(function (칸) {
+          칸.textContent = '';
+        });
+      });
+    } else { // 다 안 찼으면
+      if (턴 === 'X') {
+        턴 = 'O';
+      } else {
+        턴 = 'X';
+      }
     }
-}
+  }
+};
 
-for (var i = 0; i < 3; i++) {
-    var tr = document.createElement('tr');
-    dataset.push(cols);
-    cols.push(0);
-
-    for (var j = 0; j < 3; j++) {
-        var td = document.createElement('td');
-        td.addEventListener('click', click);
-        tr.appendChild(td);
-    }
-    table.appendChild(tr);
+for (var i = 1; i <= 3; i += 1) {
+  var 줄 = document.createElement('tr');
+  줄들.push(줄);
+  칸들.push([]);
+  for (var j = 1; j <= 3; j += 1) {
+    var 칸 = document.createElement('td');
+    칸.addEventListener('click', 비동기콜백);
+    칸들[i - 1].push(칸);
+    줄.appendChild(칸);
+  }
+  테이블.appendChild(줄);
 }
-body.appendChild(table);
+바디.appendChild(테이블);
+바디.appendChild(결과);
