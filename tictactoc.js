@@ -11,6 +11,30 @@ result.textContent = ' 1';
 var full = false;
 
 
+function init() {
+    setTimeout(function () {
+        result.textContent = '다시 시작';
+        for (var k = 0; k < 3; k++) { // 0 1 2 
+            for (var l = 0; l < 3; l++) { // 0 1 2 
+                table.childNodes[k].childNodes[l].textContent = '';
+            }
+        }
+    }, 1000);
+}
+
+function draw(table, result) {
+    for (var k = 0; k < 3; k++) { // 0 1 2 
+        for (var l = 0; l < 3; l++) { // 0 1 2 
+            if (table.childNodes[k].childNodes[l].filter(function (칸) {
+                    return !칸.textContent
+                })) {
+                result.textContent = '무승부';
+            }
+        }
+    }
+}
+
+
 function click(e) {
     e.preventDefault();
     //Find col, row of 'click', and Change textContent to "O" 
@@ -69,14 +93,15 @@ function click(e) {
     // 다 찼으면
     if (full) {
         console.log(turn + '님의 승리!');
+        result.textContent = 'win';
         turn = 'o';
-        for (var k = 0; k < 3; k++) { // 0 1 2 
-            for (var l = 0; l < 3; l++) { // 0 1 2 
-                table.childNodes[k].childNodes[l].textContent = '';
-            }
-        }
+        init();
+    } else {
+        draw(table, result);
+        init();
     }
 }
+
 
 for (var i = 0; i < 3; i++) {
     var tr = document.createElement('tr');
