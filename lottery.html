@@ -9,16 +9,43 @@
         #winNumber,
         #bonusNumber {
             display: inline-block;
+            /* position: relative; */
+        }
+
+        #guess {
+            margin: 10px;
+            top: 60px;
+        }
+
+        #another {
+            top: 90px;
+            margin: 10px;
+        }
+
+        .inputBox {
+            width: 80px;
         }
     </style>
 </head>
 
 <body>
-    <div id="winNumber"></div>
+    <div id="winNumber"> </div>
     <div id="bonusNumber"></div>
+    <form id="guess">
+        <input class="inputBox" type="number" id="guessInput1" value="1">
+        <input class="inputBox" type="number" id="guessInput2" value="2">
+        <input class="inputBox" type="number" id="guessInput3" value="3">
+        <input class="inputBox" type="number" id="guessInput4" value="4">
+        <input class="inputBox" type="number" id="guessInput5" value="5">
+        <input class="inputBox" type="number" id="guessInput6" value="6">
+        <button>입력</button>
+    </form>
+    <form id="another">
+        <button>다른숫자 입력하기</button>
+    </form>
+    <div id="result"></div>
 
-    <!-- <div id="result"></div>
-    <div id="bonus"></div> -->
+
 
     <script src="lottery.js"></script>
 </body>
