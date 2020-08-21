@@ -6,6 +6,7 @@ let minePlace = [];
 let place = [];
 const result = document.querySelector('#result');
 const again = document.querySelector('#again');
+const time2 = document.querySelector('#time2');
 const 지뢰표 = {
     빈칸: 0,
     지뢰칸: 1,
@@ -25,6 +26,8 @@ again.addEventListener('click', function () {
     place = [];
     table.innerHTML = '';
     연칸개수 = 0;
+    const startTime = Date.now();
+    console.log(startTime / 1000);
 
     //모양 만들기 (화면, 데이터)
     for (let i = 0; i < height; i++) {
@@ -119,6 +122,8 @@ again.addEventListener('click', function () {
                     // console.log(지뢰표.연빈칸);
                     if (연칸개수 === 80) {
                         result.textContent = '승리!';
+                        let winTime = Date.now();
+                        // time.textContent = winTime - startTime;
                     }
 
                     //지뢰 밟으면 
@@ -126,6 +131,12 @@ again.addEventListener('click', function () {
                     result.textContent = '끝 ㅠㅠ';
                     e.currentTarget.textContent = '펑';
                     stopflag = true;
+                    let loseTime = Date.now();
+                    console.log(loseTime - startTime);
+                    let elapsedTime = loseTime - startTime;
+                    time2.textContent = Math.floor(elapsedTime / 1000) + '초 걸렸습니다.';
+                    // time.textContent = loseTime - startTime;
+                    console.log(elapsedTime);
                 }
 
                 //주변지뢰개수가 0이면 주변8칸을 클릭한다.
