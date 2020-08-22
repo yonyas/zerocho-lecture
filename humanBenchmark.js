@@ -1,46 +1,58 @@
-var 스크린 = document.querySelector('#screen');
-var 시작시간; // scope문제로 위에서 선언
-// var 시작시간 = undefined  생략된 것과 같다.
-var 끝시간;
-var 기록 = [];
-var 타임아웃;
+const screen = document.querySelector('#screen');
+const guide = document.querySelector('#guide');
+const result = document.querySelector('#result');
+let startTime = 0;
+let endTime = 0;
+let 기록 = [];
+let timeOut;
+let stopflag = 0;
 
-스크린.addEventListener("click", function() {
-  if (스크린.classList.contains('waiting')) { // 대기 상태 (aqua)
-    //contains는 현재 클래스 파악
-    스크린.classList.remove('waiting');
-    스크린.classList.add('ready');
-    //스크린.style.backgroundColor = 'red' 도 가능하지만 class가 여러개 한번에 적용, 좋음
-    스크린.textContent = '초록색이 되면 클릭하세요.';
-    var 타임아웃 = setTimeout(function() {
-      시작시간 = new Date();
-      스크린.click();
-    }, Math.floor(Math.random() * 1000) + 2000);  // 2000 ~ 3000사이의 수
-    // ^ 화면이 red로 전환되고 그 후에 실행됨.
+// screen.classList.add('waiting');
+screen.textContent = '시작하려면 클릭';
 
-  } else if (스크린.classList.contains('ready')) { // 준비 상태 (red)
-    //부정 클릭, 색변하기 전에 클릭했을 경우 취소하기
-    if (!시작시간) {  // 시작시간이 없을때 누르면 부정클릭
-      // !는 true > false, false > true 바꿈
-      // false : undefined, 0 NaN, null, flase, '' 6개
-      clearTimeout(타임아웃);
-      스크린.classList.remove('ready');
-      스크린.classList.add('waiting');
-      스크린.textContent = '너무 성급하시군요';
-    } else {
-      스크린.classList.remove('ready');
-      스크린.classList.add('now');
-      스크린.textContent = '클릭하세요!';
+
+screen.addEventListener('click', function () {
+    if (screen.classList.contains('waiting')) { // 빨 > 초록화면 toClick (저절로 넘어감)
+        //부정클릭 막기 
+        if (stopflag !== 1) { // 0이면 클릭안됨 
+            clearTimeout(timeOut);
+            console.log('block');
+            screen.textContent = '기다렸다가 누르세요';
+            screen.classList.remove('waiting');
+            screen.classList.add('result');
+            stopflag = 1;
+
+        } else {
+            screen.classList.remove('waiting');
+            screen.classList.add('toClick');
+            screen.textContent = '클릭!!!!!!';
+            stopflag = 0;
+        }
+
+    } else if (screen.classList.contains('toClick')) { // 초 > 파랑화면 result
+        screen.classList.remove('toClick');
+        screen.classList.add('result');
+        screen.textContent = '몇초 걸렸습니다. 다시';
+        stopflag = 0;
+
+        //끝시간 체크
+        endTime = new Date();
+        console.log('elapsed time', endTime - startTime)
+        기록.push(endTime - startTime);
+
+    } else if (screen.classList.contains('result')) { // 파 > 빨강화면 waiting
+        screen.classList.remove('result');
+        screen.classList.add('waiting');
+        screen.textContent = '초록색이 되면 클릭하세요.';
+
+        let randomSecond = (Math.random() * 2000) + 1000;
+
+        //빨강화면 넘어간 후 랜덤시간 후 클릭 (>> 초록색)
+        timeOut = setTimeout(function () {
+            //시작시간 체크
+            startTime = new Date();
+            screen.click();
+            stopflag = 1; //클릭가능 
+        }, randomSecond);
     }
-
-  } else if (스크린.classList.contains('now')) { // 시작 상태 (greenyellow)
-    끝시간 = new Date();
-    console.log('반응속도', 끝시간 - 시작시간, 'ms', 끝시간, 시작시간);
-    기록.push(끝시간 - 시작시간);
-    시작시간 = null;  // 전 게임 초기화
-    끝시간 = null;
-    스크린.classList.remove('now');
-    스크린.classList.add('waiting');
-    스크린.textContent = '클릭해서 시작하세요';
-  }
 });
