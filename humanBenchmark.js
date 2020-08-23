@@ -7,7 +7,11 @@ let 기록 = [];
 let timeOut;
 let stopflag = 0;
 
-// screen.classList.add('waiting');
+screen.classList.remove('waiting');
+screen.classList.remove('toClick');
+screen.classList.add('result');
+
+
 screen.textContent = '시작하려면 클릭';
 
 
@@ -20,7 +24,7 @@ screen.addEventListener('click', function () {
             screen.textContent = '기다렸다가 누르세요';
             screen.classList.remove('waiting');
             screen.classList.add('result');
-            stopflag = 1;
+            // stopflag = 1;
 
         } else {
             screen.classList.remove('waiting');
@@ -32,18 +36,19 @@ screen.addEventListener('click', function () {
     } else if (screen.classList.contains('toClick')) { // 초 > 파랑화면 result
         screen.classList.remove('toClick');
         screen.classList.add('result');
-        screen.textContent = '몇초 걸렸습니다. 다시';
         stopflag = 0;
 
         //끝시간 체크
         endTime = new Date();
         console.log('elapsed time', endTime - startTime)
+        screen.textContent = (endTime - startTime + "초 걸렸습니다. 다시");
         기록.push(endTime - startTime);
 
     } else if (screen.classList.contains('result')) { // 파 > 빨강화면 waiting
         screen.classList.remove('result');
         screen.classList.add('waiting');
         screen.textContent = '초록색이 되면 클릭하세요.';
+        stopflag = 0; //클릭가능 
 
         let randomSecond = (Math.random() * 2000) + 1000;
 
@@ -51,8 +56,8 @@ screen.addEventListener('click', function () {
         timeOut = setTimeout(function () {
             //시작시간 체크
             startTime = new Date();
-            screen.click();
             stopflag = 1; //클릭가능 
+            screen.click();
         }, randomSecond);
     }
 });
