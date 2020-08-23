@@ -1,11 +1,14 @@
 const screen = document.querySelector('#screen');
 const guide = document.querySelector('#guide');
 const result = document.querySelector('#result');
+const startGame = document.querySelector('#startGame');
 let startTime = 0;
 let endTime = 0;
 let 기록 = [];
 let timeOut;
 let stopflag = 0;
+let count = 0;
+let newGame = false;
 
 screen.classList.remove('waiting');
 screen.classList.remove('toClick');
@@ -31,6 +34,8 @@ screen.addEventListener('click', function () {
             screen.classList.add('toClick');
             screen.textContent = '클릭!!!!!!';
             stopflag = 0;
+            count++;
+
         }
 
     } else if (screen.classList.contains('toClick')) { // 초 > 파랑화면 result
@@ -43,8 +48,19 @@ screen.addEventListener('click', function () {
         console.log('elapsed time', endTime - startTime)
         screen.textContent = (endTime - startTime + "초 걸렸습니다. 다시");
         기록.push(endTime - startTime);
+        if (count > 2) {
+            console.log('5times already')
+            기록.sort(function (p, c) {
+                return p - c
+            })
+            result.textContent = "기록 순서대로 " + 기록;
+            newGame = true;
+        }
 
     } else if (screen.classList.contains('result')) { // 파 > 빨강화면 waiting
+        if (newGame) {
+            return;
+        }
         screen.classList.remove('result');
         screen.classList.add('waiting');
         screen.textContent = '초록색이 되면 클릭하세요.';
@@ -61,3 +77,7 @@ screen.addEventListener('click', function () {
         }, randomSecond);
     }
 });
+
+startGame.addEventListener('click', function () {
+    newGame = false;
+})
